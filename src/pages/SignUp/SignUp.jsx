@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 
 const SignUp = () => {
-  const {user, createUser} = useContext(AuthContext);
+  const { createUser } = useContext(AuthContext);
   const handleSignUp = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -13,9 +13,12 @@ const SignUp = () => {
     console.log(email, password);
 
     createUser(email, password)
-    .then(userCredential => {
-      console.log(userCredential.user);
-    })
+      .then((userCredential) => {
+        console.log(userCredential.user);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
 
   return (
