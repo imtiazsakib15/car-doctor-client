@@ -10,13 +10,28 @@ const Bookings = () => {
       .then((res) => res.json())
       .then((data) => setBookings(data));
   }, [url]);
-  console.log(bookings);
+
+  const handleDelete = (id) => {
+    fetch(`http://localhost:5000/bookings/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.deletedCount === 1) {
+          const remaining = bookings.filter((booking) => booking._id !== id);
+          setBookings(remaining);
+        }
+      });
+  };
+  
   if (bookings.length === 0)
     return (
       <div className="grid place-items-center h-[80vh]">
         <h2 className="text-4xl font-bold">No Booking Found!</h2>
       </div>
     );
+    
   return (
     <div className="py-16">
       <h2 className="text-3xl font-semibold">
@@ -24,7 +39,6 @@ const Bookings = () => {
       </h2>
       <div className="overflow-x-auto pt-10">
         <table className="table">
-          {/* head */}
           <thead>
             <tr>
               <th></th>
@@ -39,7 +53,10 @@ const Bookings = () => {
             {bookings.map((booking) => (
               <tr key={booking._id}>
                 <th>
-                  <button className="btn btn-circle btn-sm btn-outline">
+                  <button
+                    onClick={() => handleDelete(booking._id)}
+                    className="btn btn-circle btn-sm btn-outline"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
