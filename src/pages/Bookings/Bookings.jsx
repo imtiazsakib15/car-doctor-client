@@ -1,14 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
+import axios from "axios";
 
 const Bookings = () => {
   const { user } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
   const url = `http://localhost:5000/bookings?email=${user?.email}`;
   useEffect(() => {
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => setBookings(data));
+    axios
+      .get(url, {
+        withCredentials: true,
+      })
+      .then((res) => setBookings(res.data));
+
+    // fetch(url)
+    //   .then((res) => res.json())
+    //   .then((data) => setBookings(data));
   }, [url]);
 
   const handleDelete = (id) => {
@@ -24,14 +31,27 @@ const Bookings = () => {
         }
       });
   };
-  
+  const handleConfirm = (id) => {
+    fetch(`http://localhost:5000/bookings/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ status: "confirm" }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
   if (bookings.length === 0)
     return (
       <div className="grid place-items-center h-[80vh]">
         <h2 className="text-4xl font-bold">No Booking Found!</h2>
       </div>
     );
-    
+
   return (
     <div className="py-16">
       <h2 className="text-3xl font-semibold">
@@ -89,7 +109,18 @@ const Bookings = () => {
                 <td>{booking.date}</td>
                 <td>${booking.price}</td>
                 <th>
-                  <button className="btn btn-ghost btn-xs">details</button>
+                  {booking.status == "confirm" ? (
+                    <span className="text-lg font-bold text-green-600">
+                      Confirmed
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleConfirm(booking._id)}
+                      className="btn btn-ghost btn-xs"
+                    >
+                      Confirm
+                    </button>
+                  )}
                 </th>
               </tr>
             ))}

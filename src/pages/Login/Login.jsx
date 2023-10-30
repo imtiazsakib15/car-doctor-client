@@ -1,20 +1,35 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginImg from "./../../assets/images/login/login.svg";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
+import axios from "axios";
 
 const Login = () => {
   const { signIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const handleLogin = (event) => {
     event.preventDefault();
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, password);
 
     signIn(email, password)
       .then((userCredential) => {
         console.log(userCredential.user);
+
+        // get access token
+        const user = { email };
+        axios
+          .post("http://localhost:5000/jwt", user, {
+            withCredentials: true,
+          })
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.success)
+              navigate(location?.state ? location.state : "/");
+          });
       })
       .catch((error) => {
         console.log(error.message);
@@ -67,7 +82,15 @@ const Login = () => {
               />
             </div>
           </form>
-          <p className="pl-8">New to Car Doctor?<Link to='/signup' className="text-blue-600 font-semibold hover:underline">Sign up</Link></p>
+          <p className="pl-8">
+            New to Car Doctor?
+            <Link
+              to="/signup"
+              className="text-blue-600 font-semibold hover:underline"
+            >
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>
