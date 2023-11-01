@@ -7,15 +7,16 @@ const Bookings = () => {
   const [bookings, setBookings] = useState([]);
   const url = `http://localhost:5000/bookings?email=${user?.email}`;
   useEffect(() => {
-    axios
-      .get(url, {
-        withCredentials: true,
-      })
-      .then((res) => setBookings(res.data));
+    // axios
+    //   .get(url, { withCredentials: true })
+    //   .then((res) => setBookings(res.data))
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
 
-    // fetch(url)
-    //   .then((res) => res.json())
-    //   .then((data) => setBookings(data));
+    fetch(url, { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => setBookings(data));
   }, [url]);
 
   const handleDelete = (id) => {
