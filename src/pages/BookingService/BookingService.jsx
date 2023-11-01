@@ -1,9 +1,12 @@
-import { useContext } from "react";
+// import { useContext } from "react";
 import { useLoaderData } from "react-router-dom";
-import { AuthContext } from "../../providers/AuthProvider";
+import useAuth from "../../hooks/useAuth";
+// import { AuthContext } from "../../providers/AuthProvider";
 
 const BookingService = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
+
+  // const { user } = useContext(AuthContext);
   const bookingDetails = useLoaderData();
   const { _id, title, price, img } = bookingDetails;
 

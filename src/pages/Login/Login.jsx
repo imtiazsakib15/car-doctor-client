@@ -1,11 +1,13 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginImg from "./../../assets/images/login/login.svg";
-import { useContext } from "react";
-import { AuthContext } from "../../providers/AuthProvider";
-import axios from "axios";
+// import { useContext } from "react";
+// import { AuthContext } from "../../providers/AuthProvider";
+// import axios from "axios";
+import useAuth from "../../hooks/useAuth";
 
 const Login = () => {
-  const { signIn } = useContext(AuthContext);
+  const { signIn } = useAuth();
+  // const { signIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,8 +18,8 @@ const Login = () => {
     const password = form.password.value;
 
     signIn(email, password)
-      .then((userCredential) => {
-        // console.log(userCredential.user);
+      .then(() => {
+        navigate(location?.state ? location.state : "/");
 
         // get access token
         // const user = { email };
